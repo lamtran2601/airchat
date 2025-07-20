@@ -1,0 +1,45 @@
+{
+  "name": "p2p-app",
+  "version": "1.0.0",
+  "description": "A peer-to-peer application with real-time chat and file transfer capabilities",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm run --parallel dev",
+    "build": "pnpm run --recursive build",
+    "test": "pnpm run --recursive test",
+    "lint": "pnpm run --recursive lint",
+    "lint:fix": "pnpm run --recursive lint:fix",
+    "type-check": "pnpm run --recursive type-check",
+    "clean": "pnpm run --recursive clean",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:server": "pnpm --filter signaling-server dev",
+    "build:frontend": "pnpm --filter frontend build",
+    "build:server": "pnpm --filter signaling-server build",
+    "start:server": "pnpm --filter signaling-server start"
+  },
+  "keywords": [
+    "p2p",
+    "webrtc",
+    "chat",
+    "file-transfer",
+    "react",
+    "typescript"
+  ],
+  "author": "P2P App Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}
