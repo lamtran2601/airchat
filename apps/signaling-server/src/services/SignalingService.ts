@@ -1,5 +1,17 @@
 import { Server, Socket } from 'socket.io';
 
+// WebRTC type definitions for server environment
+interface RTCSessionDescriptionInit {
+  type?: 'offer' | 'answer';
+  sdp?: string;
+}
+
+interface RTCIceCandidateInit {
+  candidate?: string;
+  sdpMLineIndex?: number | null;
+  sdpMid?: string | null;
+}
+
 interface PeerInfo {
   id: string;
   roomId: string;
@@ -38,17 +50,26 @@ export class SignalingService {
       });
 
       // Handle WebRTC signaling messages
-      socket.on('offer', (data: { target: string; offer: RTCSessionDescriptionInit }) => {
-        this.relayMessage(socket, 'offer', data);
-      });
+      socket.on(
+        'offer',
+        (data: { target: string; offer: RTCSessionDescriptionInit }) => {
+          this.relayMessage(socket, 'offer', data);
+        }
+      );
 
-      socket.on('answer', (data: { target: string; answer: RTCSessionDescriptionInit }) => {
-        this.relayMessage(socket, 'answer', data);
-      });
+      socket.on(
+        'answer',
+        (data: { target: string; answer: RTCSessionDescriptionInit }) => {
+          this.relayMessage(socket, 'answer', data);
+        }
+      );
 
-      socket.on('ice-candidate', (data: { target: string; candidate: RTCIceCandidateInit }) => {
-        this.relayMessage(socket, 'ice-candidate', data);
-      });
+      socket.on(
+        'ice-candidate',
+        (data: { target: string; candidate: RTCIceCandidateInit }) => {
+          this.relayMessage(socket, 'ice-candidate', data);
+        }
+      );
 
       // Handle disconnection
       socket.on('disconnect', () => {
@@ -70,7 +91,7 @@ export class SignalingService {
 
     // Join new room
     socket.join(roomId);
-    
+
     // Initialize room if it doesn't exist
     if (!SignalingService.rooms.has(roomId)) {
       SignalingService.rooms.set(roomId, new Set());
@@ -78,11 +99,11 @@ export class SignalingService {
     }
 
     const room = SignalingService.rooms.get(roomId)!;
-    
+
     // Notify existing peers about new peer
     const existingPeers = Array.from(room);
     socket.emit('room-joined', { roomId, peers: existingPeers });
-    
+
     // Notify existing peers about new peer joining
     socket.to(roomId).emit('peer-joined', { peerId: socket.id });
 
@@ -94,7 +115,9 @@ export class SignalingService {
       joinedAt: new Date(),
     });
 
-    console.log(`✅ ${socket.id} joined room ${roomId}. Room size: ${room.size}`);
+    console.log(
+      `✅ ${socket.id} joined room ${roomId}. Room size: ${room.size}`
+    );
   }
 
   private handleLeaveRoom(socket: Socket) {
@@ -103,21 +126,23 @@ export class SignalingService {
 
     const { roomId } = peerInfo;
     const room = SignalingService.rooms.get(roomId);
-    
+
     if (room) {
       room.delete(socket.id);
       socket.leave(roomId);
-      
+
       // Notify other peers about peer leaving
       socket.to(roomId).emit('peer-left', { peerId: socket.id });
-      
+
       // Clean up empty room
       if (room.size === 0) {
         SignalingService.rooms.delete(roomId);
         console.log(`🗑️ Room ${roomId} deleted (empty)`);
       }
-      
-      console.log(`👋 ${socket.id} left room ${roomId}. Room size: ${room.size}`);
+
+      console.log(
+        `👋 ${socket.id} left room ${roomId}. Room size: ${room.size}`
+      );
     }
 
     SignalingService.peers.delete(socket.id);
@@ -126,13 +151,17 @@ export class SignalingService {
   private handleDisconnect(socket: Socket) {
     console.log(`🔌 Client disconnected: ${socket.id}`);
     SignalingService.stats.activeConnections--;
-    
+
     this.handleLeaveRoom(socket);
   }
 
-  private relayMessage(socket: Socket, event: string, data: { target: string; [key: string]: any }) {
+  private relayMessage(
+    socket: Socket,
+    event: string,
+    data: { target: string; [key: string]: any }
+  ) {
     const { target, ...payload } = data;
-    
+
     // Add sender information
     const messageWithSender = {
       ...payload,
@@ -142,18 +171,20 @@ export class SignalingService {
     // Relay message to target peer
     socket.to(target).emit(event, messageWithSender);
     SignalingService.stats.messagesRelayed++;
-    
+
     console.log(`📨 Relayed ${event} from ${socket.id} to ${target}`);
   }
 
   public static getStats() {
     return {
       ...SignalingService.stats,
-      rooms: Array.from(SignalingService.rooms.entries()).map(([id, peers]) => ({
-        id,
-        peerCount: peers.size,
-        peers: Array.from(peers),
-      })),
+      rooms: Array.from(SignalingService.rooms.entries()).map(
+        ([id, peers]) => ({
+          id,
+          peerCount: peers.size,
+          peers: Array.from(peers),
+        })
+      ),
       timestamp: new Date().toISOString(),
     };
   }

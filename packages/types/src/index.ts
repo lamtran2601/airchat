@@ -1,9 +1,57 @@
+// WebRTC Types (for environments without DOM)
+export interface RTCSessionDescriptionInit {
+  type?: 'offer' | 'answer' | 'pranswer' | 'rollback';
+  sdp?: string;
+}
+
+export interface RTCIceCandidateInit {
+  candidate?: string;
+  sdpMLineIndex?: number | null;
+  sdpMid?: string | null;
+}
+
+export interface RTCIceServer {
+  urls: string | string[];
+  username?: string;
+  credential?: string;
+}
+
+export interface RTCPeerConnection {
+  createOffer(): Promise<RTCSessionDescriptionInit>;
+  createAnswer(): Promise<RTCSessionDescriptionInit>;
+  setLocalDescription(description: RTCSessionDescriptionInit): Promise<void>;
+  setRemoteDescription(description: RTCSessionDescriptionInit): Promise<void>;
+  addIceCandidate(candidate: RTCIceCandidateInit): Promise<void>;
+  createDataChannel(label: string, options?: any): RTCDataChannel;
+  close(): void;
+  connectionState: string;
+  iceGatheringState: string;
+  addEventListener(type: string, listener: any): void;
+  removeEventListener(type: string, listener: any): void;
+  onicecandidate: ((event: any) => void) | null;
+  onconnectionstatechange: ((event?: any) => void) | null;
+  ondatachannel: ((event: any) => void) | null;
+  onicegatheringstatechange: ((event?: any) => void) | null;
+}
+
+export interface RTCDataChannel {
+  send(data: string | ArrayBuffer | ArrayBufferView): void;
+  close(): void;
+  readyState: string;
+  addEventListener(type: string, listener: any): void;
+  removeEventListener(type: string, listener: any): void;
+  onopen: ((event?: any) => void) | null;
+  onclose: ((event?: any) => void) | null;
+  onerror: ((error: any) => void) | null;
+  onmessage: ((event: any) => void) | null;
+}
+
 // Core P2P Types
 export interface PeerInfo {
   id: string;
   name?: string;
   avatar?: string;
-  status: 'online' | 'offline' | 'connecting';
+  status: 'online' | 'offline' | 'connecting' | 'connected' | 'disconnected';
   lastSeen?: Date;
 }
 
@@ -85,10 +133,19 @@ export interface FileTransfer {
   fileType: string;
   senderId: string;
   receiverId: string;
-  status: 'pending' | 'accepted' | 'rejected' | 'transferring' | 'completed' | 'failed';
+  status:
+    | 'pending'
+    | 'accepted'
+    | 'rejected'
+    | 'transferring'
+    | 'in-progress'
+    | 'completed'
+    | 'failed'
+    | 'cancelled';
   progress: number;
   startTime?: Date;
   endTime?: Date;
+  timestamp: Date; // Add timestamp for frontend compatibility
   chunks: FileChunk[];
 }
 
@@ -122,10 +179,11 @@ export interface Notification {
 }
 
 // Event Types
-export type P2PEvent = 
+export type P2PEvent =
   | { type: 'peer-connected'; peer: PeerInfo }
   | { type: 'peer-disconnected'; peer: PeerInfo }
   | { type: 'message-received'; message: Message }
+  | { type: 'data-received'; peerId: string; data: string }
   | { type: 'file-transfer-request'; transfer: FileTransfer }
   | { type: 'file-transfer-progress'; transferId: string; progress: number }
   | { type: 'connection-state-changed'; state: ConnectionState };
@@ -134,6 +192,7 @@ export type P2PEvent =
 export interface P2PConfig {
   iceServers: RTCIceServer[];
   signalingUrl: string;
+  signalingServer?: string; // Backward compatibility with frontend
   maxReconnectAttempts: number;
   reconnectDelay: number;
   chunkSize: number;
@@ -148,7 +207,7 @@ export interface P2PError {
   timestamp: Date;
 }
 
-export type P2PErrorCode = 
+export type P2PErrorCode =
   | 'CONNECTION_FAILED'
   | 'SIGNALING_ERROR'
   | 'FILE_TRANSFER_ERROR'
@@ -161,5 +220,8 @@ export type P2PErrorCode =
 export type EventHandler<T = any> = (event: T) => void;
 export type AsyncEventHandler<T = any> = (event: T) => Promise<void>;
 
-// Re-export common types
-export type { Socket } from 'socket.io-client';
+// Re-export common types (only in browser environment)
+export type Socket = any;
+
+// Export interface contracts
+export * from './contracts/P2PServiceContract.js';

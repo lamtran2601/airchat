@@ -17,18 +17,14 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
+    "rootDir": "./src",
     "paths": {
       "@/*": ["./src/*"],
-      "@p2p/core": ["../../packages/p2p-core/src"],
-      "@p2p/types": ["../../packages/types/src"],
-      "@p2p/ui": ["../../packages/ui-components/src"]
+      "@p2p/core": ["../../packages/p2p-core/dist"],
+      "@p2p/types": ["../../packages/types/dist"],
+      "@p2p/ui": ["../../packages/ui-components/dist"]
     }
   },
-  "include": [
-    "src",
-    "vite.config.ts"
-  ],
-  "references": [
-    { "path": "./tsconfig.node.json" }
-  ]
+  "include": ["src/**/*"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

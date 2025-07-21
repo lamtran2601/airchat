@@ -8,7 +8,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -17,7 +17,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+
     "baseUrl": ".",
     "paths": {
       "@p2p/core": ["./packages/p2p-core/src"],
@@ -25,13 +25,6 @@
       "@p2p/ui": ["./packages/ui-components/src"]
     }
   },
-  "include": [
-    "apps/*/src/**/*",
-    "packages/*/src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build"
-  ]
+  "include": ["apps/*/src/**/*", "packages/*/src/**/*"],
+  "exclude": ["node_modules", "dist", "build"]
 }

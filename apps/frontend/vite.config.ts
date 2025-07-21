@@ -8,9 +8,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '@p2p/core': resolve(__dirname, '../../packages/p2p-core/src'),
-      '@p2p/types': resolve(__dirname, '../../packages/types/src'),
-      '@p2p/ui': resolve(__dirname, '../../packages/ui-components/src'),
+      '@p2p/core': resolve(__dirname, '../../packages/p2p-core/dist'),
+      '@p2p/types': resolve(__dirname, '../../packages/types/dist'),
+      '@p2p/ui': resolve(__dirname, '../../packages/ui-components/dist'),
     },
   },
   server: {

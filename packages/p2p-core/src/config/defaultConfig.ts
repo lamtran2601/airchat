@@ -6,7 +6,8 @@ export const defaultP2PConfig: P2PConfig = {
     { urls: 'stun:stun1.l.google.com:19302' },
     { urls: 'stun:stun2.l.google.com:19302' },
   ],
-  signalingUrl: 'http://localhost:3001',
+  signalingUrl: 'http://localhost:4000',
+  signalingServer: 'http://localhost:4000', // Add for frontend compatibility
   maxReconnectAttempts: 3,
   reconnectDelay: 1000, // 1 second
   chunkSize: 16384, // 16KB chunks for file transfer

@@ -48,14 +48,14 @@ class P2PConnectionManager {
     this.config = {
       // Free STUN servers
       iceServers: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
-        { urls: "stun:stun.services.mozilla.com:3478" },
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun.services.mozilla.com:3478' },
       ],
       // Optimize for small apps
       iceCandidatePoolSize: 3,
-      bundlePolicy: "max-bundle",
-      rtcpMuxPolicy: "require",
+      bundlePolicy: 'max-bundle',
+      rtcpMuxPolicy: 'require',
       ...config,
     };
 
@@ -76,7 +76,7 @@ class P2PConnectionManager {
 
       if (isInitiator) {
         // Create data channel for initiator
-        const dataChannel = pc.createDataChannel("main", {
+        const dataChannel = pc.createDataChannel('main', {
           ordered: true,
           maxRetransmits: 3,
         });
@@ -84,7 +84,7 @@ class P2PConnectionManager {
         this.dataChannels.set(peerId, dataChannel);
       } else {
         // Wait for data channel from remote
-        pc.ondatachannel = (event) => {
+        pc.ondatachannel = event => {
           const dataChannel = event.channel;
           this.setupDataChannelHandlers(dataChannel, peerId);
           this.dataChannels.set(peerId, dataChannel);
@@ -92,12 +92,12 @@ class P2PConnectionManager {
       }
 
       this.connections.set(peerId, pc);
-      this.emit("connection-created", { peerId, isInitiator });
+      this.emit('connection-created', { peerId, isInitiator });
 
       return pc;
     } catch (error) {
-      console.error("Failed to create connection:", error);
-      this.emit("connection-error", { peerId, error });
+      console.error('Failed to create connection:', error);
+      this.emit('connection-error', { peerId, error });
       throw error;
     }
   }
@@ -108,25 +108,25 @@ class P2PConnectionManager {
       const state = pc.connectionState;
       console.log(`Connection to ${peerId}: ${state}`);
 
-      this.emit("connection-state-change", { peerId, state });
+      this.emit('connection-state-change', { peerId, state });
 
       switch (state) {
-        case "connected":
+        case 'connected':
           this.reconnectAttempts.delete(peerId);
-          this.emit("peer-connected", { peerId });
+          this.emit('peer-connected', { peerId });
           break;
 
-        case "disconnected":
-          this.emit("peer-disconnected", { peerId });
+        case 'disconnected':
+          this.emit('peer-disconnected', { peerId });
           this.scheduleReconnect(peerId);
           break;
 
-        case "failed":
-          this.emit("peer-failed", { peerId });
+        case 'failed':
+          this.emit('peer-failed', { peerId });
           this.handleConnectionFailure(peerId);
           break;
 
-        case "closed":
+        case 'closed':
           this.cleanup(peerId);
           break;
       }
@@ -166,7 +166,7 @@ class P2PConnectionManager {
       }, delay);
     } else {
       console.log(`Max reconnect attempts reached for ${peerId}`);
-      this.emit("peer-unreachable", { peerId });
+      this.emit('peer-unreachable', { peerId });
     }
   }
 
@@ -174,7 +174,7 @@ class P2PConnectionManager {
   async sendReliable(peerId, data, options = {}) {
     const channel = this.dataChannels.get(peerId);
 
-    if (!channel || channel.readyState !== "open") {
+    if (!channel || channel.readyState !== 'open') {
       throw new Error(`No open channel to ${peerId}`);
     }
 
@@ -187,10 +187,10 @@ class P2PConnectionManager {
 
     try {
       channel.send(JSON.stringify(message));
-      this.emit("message-sent", { peerId, message });
+      this.emit('message-sent', { peerId, message });
       return message.id;
     } catch (error) {
-      this.emit("message-failed", { peerId, message, error });
+      this.emit('message-failed', { peerId, message, error });
       throw error;
     }
   }
@@ -203,7 +203,7 @@ class P2PConnectionManager {
   }
 
   on(eventType, handler) {
-    this.eventEmitter.addEventListener(eventType, (event) =>
+    this.eventEmitter.addEventListener(eventType, event =>
       handler(event.detail)
     );
   }
@@ -230,17 +230,17 @@ class MinimalSignaling {
   async connect() {
     return new Promise((resolve, reject) => {
       this.socket = io(this.serverUrl, {
-        transports: ["websocket"], // Faster than polling
+        transports: ['websocket'], // Faster than polling
         timeout: 5000,
       });
 
-      this.socket.on("connect", () => {
+      this.socket.on('connect', () => {
         this.peerId = this.socket.id;
         console.log(`Connected with ID: ${this.peerId}`);
         resolve(this.peerId);
       });
 
-      this.socket.on("connect_error", reject);
+      this.socket.on('connect_error', reject);
       this.setupSignalingHandlers();
     });
   }
@@ -248,15 +248,15 @@ class MinimalSignaling {
   setupSignalingHandlers() {
     // Simplified message types
     const messageTypes = [
-      "offer",
-      "answer",
-      "ice-candidate",
-      "peer-joined",
-      "peer-left",
+      'offer',
+      'answer',
+      'ice-candidate',
+      'peer-joined',
+      'peer-left',
     ];
 
-    messageTypes.forEach((type) => {
-      this.socket.on(type, (data) => {
+    messageTypes.forEach(type => {
+      this.socket.on(type, data => {
         this.emit(type, data);
       });
     });
@@ -264,7 +264,7 @@ class MinimalSignaling {
 
   async joinRoom(roomId) {
     this.room = roomId;
-    this.socket.emit("join-room", roomId);
+    this.socket.emit('join-room', roomId);
   }
 
   sendToRoom(type, data) {
@@ -278,7 +278,7 @@ class MinimalSignaling {
   }
 
   on(eventType, handler) {
-    this.eventEmitter.addEventListener(eventType, (event) =>
+    this.eventEmitter.addEventListener(eventType, event =>
       handler(event.detail)
     );
   }
@@ -292,7 +292,7 @@ class MinimalSignaling {
 class P2PApp {
   constructor(config = {}) {
     this.signaling = new MinimalSignaling(
-      config.signalingServer || "http://localhost:3001"
+      config.signalingServer || 'http://localhost:4000'
     );
     this.connectionManager = new P2PConnectionManager(config.webrtc);
     this.eventBus = new EventTarget();
@@ -302,29 +302,29 @@ class P2PApp {
 
   setupEventHandlers() {
     // Signaling events
-    this.signaling.on("peer-joined", async (data) => {
+    this.signaling.on('peer-joined', async data => {
       await this.handlePeerJoined(data.peerId);
     });
 
-    this.signaling.on("offer", async (data) => {
+    this.signaling.on('offer', async data => {
       await this.handleOffer(data.from, data.offer);
     });
 
-    this.signaling.on("answer", async (data) => {
+    this.signaling.on('answer', async data => {
       await this.handleAnswer(data.from, data.answer);
     });
 
-    this.signaling.on("ice-candidate", async (data) => {
+    this.signaling.on('ice-candidate', async data => {
       await this.handleIceCandidate(data.from, data.candidate);
     });
 
     // Connection events
-    this.connectionManager.on("peer-connected", (data) => {
-      this.emit("peer-ready", data);
+    this.connectionManager.on('peer-connected', data => {
+      this.emit('peer-ready', data);
     });
 
-    this.connectionManager.on("message-received", (data) => {
-      this.emit("message", data);
+    this.connectionManager.on('message-received', data => {
+      this.emit('message', data);
     });
   }
 
@@ -342,7 +342,7 @@ class P2PApp {
     for (const peerId of peers) {
       try {
         const messageId = await this.connectionManager.sendReliable(peerId, {
-          type: "message",
+          type: 'message',
           content: message,
           timestamp: Date.now(),
         });
@@ -366,13 +366,13 @@ class P2PApp {
 
   async sendFileToUser(peerId, file) {
     const channel = this.connectionManager.dataChannels.get(peerId);
-    if (!channel || channel.readyState !== "open") {
-      throw new Error("No connection to peer");
+    if (!channel || channel.readyState !== 'open') {
+      throw new Error('No connection to peer');
     }
 
     // Send file metadata
     await this.connectionManager.sendReliable(peerId, {
-      type: "file-offer",
+      type: 'file-offer',
       name: file.name,
       size: file.size,
       type: file.type,
@@ -391,7 +391,7 @@ class P2PApp {
       channel.send(arrayBuffer);
 
       // Progress tracking
-      this.emit("file-progress", {
+      this.emit('file-progress', {
         peerId,
         filename: file.name,
         progress: (i + 1) / chunks,
@@ -399,7 +399,7 @@ class P2PApp {
     }
 
     await this.connectionManager.sendReliable(peerId, {
-      type: "file-complete",
+      type: 'file-complete',
       name: file.name,
     });
   }
@@ -410,7 +410,7 @@ class P2PApp {
   }
 
   on(eventType, handler) {
-    this.eventBus.addEventListener(eventType, (event) => handler(event.detail));
+    this.eventBus.addEventListener(eventType, event => handler(event.detail));
   }
 }
 ```
@@ -423,9 +423,9 @@ class P2PApp {
 
 ```javascript
 // Ultra-minimal signaling server (costs ~$5/month)
-const express = require("express");
-const http = require("http");
-const socketIo = require("socket.io");
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 
 const app = express();
 const server = http.createServer(app);
@@ -433,14 +433,14 @@ const io = socketIo(server, {
   // Optimize for minimal resource usage
   pingTimeout: 60000,
   pingInterval: 25000,
-  transports: ["websocket"],
+  transports: ['websocket'],
 });
 
 // Simple room-based signaling
 const rooms = new Map();
 
-io.on("connection", (socket) => {
-  socket.on("join-room", (roomId) => {
+io.on('connection', socket => {
+  socket.on('join-room', roomId => {
     socket.join(roomId);
 
     if (!rooms.has(roomId)) {
@@ -449,22 +449,22 @@ io.on("connection", (socket) => {
     rooms.get(roomId).add(socket.id);
 
     // Notify others in room
-    socket.to(roomId).emit("peer-joined", { peerId: socket.id });
+    socket.to(roomId).emit('peer-joined', { peerId: socket.id });
   });
 
   // Simple message relay
-  ["offer", "answer", "ice-candidate"].forEach((type) => {
-    socket.on(type, (data) => {
+  ['offer', 'answer', 'ice-candidate'].forEach(type => {
+    socket.on(type, data => {
       socket.to(data.room).emit(type, { from: socket.id, ...data });
     });
   });
 
-  socket.on("disconnect", () => {
+  socket.on('disconnect', () => {
     // Clean up rooms
     for (const [roomId, participants] of rooms) {
       if (participants.has(socket.id)) {
         participants.delete(socket.id);
-        socket.to(roomId).emit("peer-left", { peerId: socket.id });
+        socket.to(roomId).emit('peer-left', { peerId: socket.id });
 
         if (participants.size === 0) {
           rooms.delete(roomId);
@@ -474,7 +474,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3001);
+server.listen(4000);
 ```
 
 ### Deployment Options (Cost Comparison)
@@ -501,31 +501,31 @@ server.listen(3001);
 
 ```javascript
 const app = new P2PApp({
-  signalingServer: "https://cloudflare-signaling.lamtran.workers.dev",
+  signalingServer: 'https://cloudflare-signaling.lamtran.workers.dev',
 });
 
 // Join room and start chatting
-await app.joinRoom("room123");
+await app.joinRoom('room123');
 
-app.on("peer-ready", ({ peerId }) => {
+app.on('peer-ready', ({ peerId }) => {
   console.log(`Connected to ${peerId}`);
 });
 
-app.on("message", ({ peerId, data }) => {
-  if (data.type === "message") {
+app.on('message', ({ peerId, data }) => {
+  if (data.type === 'message') {
     displayMessage(data.content);
   }
 });
 
 // Send message
-await app.sendMessage("Hello World!");
+await app.sendMessage('Hello World!');
 ```
 
 ### File Sharing App
 
 ```javascript
 // File drop handler
-document.addEventListener("drop", async (event) => {
+document.addEventListener('drop', async event => {
   event.preventDefault();
   const files = Array.from(event.dataTransfer.files);
 
@@ -534,7 +534,7 @@ document.addEventListener("drop", async (event) => {
   }
 });
 
-app.on("file-progress", ({ filename, progress }) => {
+app.on('file-progress', ({ filename, progress }) => {
   updateProgressBar(filename, progress);
 });
 ```
@@ -551,9 +551,9 @@ async function startVideoCall() {
 
   // Add tracks to all peer connections
   const peers = Array.from(app.connectionManager.connections.keys());
-  peers.forEach((peerId) => {
+  peers.forEach(peerId => {
     const pc = app.connectionManager.connections.get(peerId);
-    stream.getTracks().forEach((track) => {
+    stream.getTracks().forEach(track => {
       pc.addTrack(track, stream);
     });
   });

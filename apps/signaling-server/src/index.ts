@@ -16,49 +16,55 @@ const server = createServer(app);
 // Configure CORS for Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
-    methods: ["GET", "POST"],
-    credentials: true
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true,
   },
-  transports: ['websocket', 'polling']
+  transports: ['websocket', 'polling'],
 });
 
 // Middleware
-app.use(helmet({
-  contentSecurityPolicy: false, // Disable for development
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // Disable for development
+  })
+);
 app.use(compression());
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+app.get('/health', (_req, res) => {
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    version: process.env.npm_package_version || '1.0.0'
+    version: process.env.npm_package_version || '1.0.0',
   });
 });
 
 // API routes
-app.get('/api/stats', (req, res) => {
+app.get('/api/stats', (_req, res) => {
   const stats = SignalingService.getStats();
   res.json(stats);
 });
 
 // Initialize signaling service
-const signalingService = new SignalingService(io);
+new SignalingService(io);
 
 // Start server
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
   console.log(`🚀 Signaling server running on port ${PORT}`);
   console.log(`📡 WebSocket endpoint: ws://localhost:${PORT}`);
-  console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:3000"}`);
+  console.log(
+    `🌐 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`
+  );
 });
 
 // Graceful shutdown
