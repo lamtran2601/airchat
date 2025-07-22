@@ -157,3 +157,321 @@ body {
   background-color: #f5f5f5;
   border-radius: 3px;
 }
+
+/* Enhanced peer capabilities styling */
+.local-capabilities {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #e8f5e8;
+  border-radius: 8px;
+  border: 2px solid #4caf50;
+}
+
+.local-capabilities h4 {
+  margin: 0 0 10px 0;
+  color: #2e7d32;
+  font-size: 16px;
+}
+
+.capability-item {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.capability-item strong {
+  color: #2e7d32;
+  margin-right: 8px;
+}
+
+.peer-item.enhanced {
+  padding: 12px;
+  margin-bottom: 12px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.peer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.peer-header strong {
+  font-size: 16px;
+  color: #333;
+}
+
+.quality-indicator {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.quality-indicator.excellent {
+  background-color: #4caf50;
+  color: white;
+}
+
+.quality-indicator.good {
+  background-color: #8bc34a;
+  color: white;
+}
+
+.quality-indicator.fair {
+  background-color: #ff9800;
+  color: white;
+}
+
+.quality-indicator.poor {
+  background-color: #f44336;
+  color: white;
+}
+
+.peer-capabilities {
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+.connection-quality {
+  padding: 8px;
+  background-color: #fff3e0;
+  border-radius: 6px;
+  border-left: 4px solid #ff9800;
+}
+
+.capability-row,
+.quality-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.capability-row:last-child,
+.quality-row:last-child {
+  margin-bottom: 0;
+}
+
+.capability-row .label,
+.quality-row .label {
+  font-weight: 600;
+  color: #555;
+  min-width: 80px;
+}
+
+.capability-row .value,
+.quality-row .value {
+  color: #333;
+  text-align: right;
+  font-family: 'Courier New', monospace;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .peer-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .capability-row,
+  .quality-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .capability-row .value,
+  .quality-row .value {
+    text-align: left;
+  }
+}
+
+/* File Transfer Styles */
+.file-transfer-section {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.file-input-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.file-input-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: bold;
+}
+
+.file-input-label:hover:not(.disabled) {
+  background-color: #1976d2;
+}
+
+.file-input-label.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.file-transfers,
+.received-files {
+  margin-top: 15px;
+}
+
+.file-transfers h4,
+.received-files h4 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.file-transfer-item,
+.received-file-item {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.file-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.file-size {
+  color: #666;
+  font-size: 12px;
+}
+
+.file-status {
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-preparing {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.status-sending,
+.status-receiving {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-completed {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+.status-error {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.status-offered {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  font-weight: bold;
+  color: #333;
+}
+
+.error-message {
+  color: #c62828;
+  font-size: 12px;
+  margin-top: 5px;
+  padding: 5px;
+  background-color: #ffebee;
+  border-radius: 3px;
+}
+
+.received-time {
+  color: #666;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.download-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.download-button:hover {
+  background-color: #45a049;
+}
+
+/* Responsive adjustments for file transfer */
+@media (max-width: 600px) {
+  .file-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .file-input-label {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}

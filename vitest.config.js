@@ -8,12 +8,8 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.js"],
     globals: true,
     css: true,
-    // Include real code tests
-    include: [
-      "src/test/basic.test.js",
-      "src/test/real-code-tests.test.js",
-      "src/test/real-react-tests.test.jsx",
-    ],
+    // Include all test files
+    include: ["src/test/**/*.{test,spec}.{js,jsx}"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],

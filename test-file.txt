@@ -1,0 +1,13 @@
+This is a test file for P2P file transfer functionality.
+
+The file transfer system should:
+1. Send this file to connected peers
+2. Show progress during transfer
+3. Allow the receiving peer to download the file
+4. Handle errors gracefully
+
+This test validates that the reliability improvements we made are working correctly in real-world scenarios.
+
+File size: Small text file (~500 bytes)
+Transfer method: P2P WebRTC data channels
+Expected result: Successful transfer with progress tracking

@@ -6,10 +6,10 @@ import terminal from "vite-plugin-terminal";
 export default defineConfig({
   plugins: [
     react(),
-    terminal({
-      console: "terminal",
-      strip: false,
-    }),
+    // terminal({
+    //   console: "terminal",
+    //   strip: false,
+    // }),
   ],
   server: {
     port: 3000,
