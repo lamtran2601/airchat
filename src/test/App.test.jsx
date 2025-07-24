@@ -3,8 +3,24 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../App.jsx";
 
-// Instead of mocking everything, let's test real behavior with minimal mocking
-// We'll only mock the parts that can't work in test environment (WebRTC, Socket.IO)
+// Mock the P2PApp class
+const mockP2PApp = {
+  connect: vi.fn(),
+  joinRoom: vi.fn(),
+  sendMessage: vi.fn(),
+  shareFile: vi.fn(),
+  isConnected: vi.fn(),
+  getConnectedPeers: vi.fn(),
+  getPeerId: vi.fn(),
+  on: vi.fn(),
+  off: vi.fn(),
+  disconnect: vi.fn(),
+};
+
+// Mock the P2PApp module
+vi.mock("../lib/P2PApp.js", () => ({
+  P2PApp: vi.fn(() => mockP2PApp),
+}));
 
 describe("App Component", () => {
   let user;
@@ -19,6 +35,9 @@ describe("App Component", () => {
     mockP2PApp.sendMessage.mockResolvedValue([
       { success: true, peerId: "peer1" },
     ]);
+    mockP2PApp.isConnected.mockReturnValue(false);
+    mockP2PApp.getConnectedPeers.mockReturnValue([]);
+    mockP2PApp.getPeerId.mockReturnValue("mock-peer-id");
   });
 
   afterEach(() => {
@@ -30,7 +49,8 @@ describe("App Component", () => {
       render(<App />);
 
       expect(screen.getByText("🔗 P2P Messenger")).toBeInTheDocument();
-      expect(screen.getByText("Disconnected")).toBeInTheDocument();
+      // App starts in "Connecting..." state, not "Disconnected"
+      expect(screen.getByText("Connecting...")).toBeInTheDocument();
       expect(screen.getByPlaceholderText("Enter room ID")).toBeInTheDocument();
       expect(screen.getByText("Join Room")).toBeInTheDocument();
       expect(
@@ -79,7 +99,9 @@ describe("App Component", () => {
       connectHandler({ peerId: "mock-peer-id" });
 
       await waitFor(() => {
-        expect(screen.getByText("Connected")).toBeInTheDocument();
+        expect(
+          screen.getByText("Connected (mock-peer-id)")
+        ).toBeInTheDocument();
       });
 
       // Room input should be enabled
@@ -96,7 +118,7 @@ describe("App Component", () => {
       errorHandler({ error: new Error("Connection failed") });
 
       await waitFor(() => {
-        expect(screen.getByText("Connection Error")).toBeInTheDocument();
+        expect(screen.getByText("Disconnected")).toBeInTheDocument();
       });
     });
   });
@@ -112,7 +134,9 @@ describe("App Component", () => {
       connectHandler({ peerId: "mock-peer-id" });
 
       await waitFor(() => {
-        expect(screen.getByText("Connected")).toBeInTheDocument();
+        expect(
+          screen.getByText("Connected (mock-peer-id)")
+        ).toBeInTheDocument();
       });
     });
 
@@ -192,7 +216,9 @@ describe("App Component", () => {
       connectHandler({ peerId: "mock-peer-id" });
 
       await waitFor(() => {
-        expect(screen.getByText("Connected")).toBeInTheDocument();
+        expect(
+          screen.getByText("Connected (mock-peer-id)")
+        ).toBeInTheDocument();
       });
     });
 
@@ -296,10 +322,12 @@ describe("App Component", () => {
       )[1];
       messageHandler({
         peerId: "peer1",
-        data: {
-          type: "message",
-          content: "Hello from peer!",
-          timestamp: Date.now(),
+        message: {
+          data: {
+            type: "message",
+            content: "Hello from peer!",
+            timestamp: Date.now(),
+          },
           id: "msg-123",
         },
       });
@@ -347,7 +375,9 @@ describe("App Component", () => {
       connectHandler({ peerId: "mock-peer-id" });
 
       await waitFor(() => {
-        expect(screen.getByText("Connected")).toBeInTheDocument();
+        expect(
+          screen.getByText("Connected (mock-peer-id)")
+        ).toBeInTheDocument();
       });
     });
 

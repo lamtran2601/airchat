@@ -15,18 +15,21 @@ A minimal, cost-effective peer-to-peer messaging application built with WebRTC, 
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - **React 19** - Modern UI framework
 - **Vite** - Fast build tool and development server
 - **WebRTC** - Peer-to-peer communication
 - **Socket.IO Client** - Signaling communication
 
 ### Backend
+
 - **Node.js** - Runtime environment
 - **Express** - Web server framework
 - **Socket.IO** - WebSocket signaling server
 - **CORS** - Cross-origin resource sharing
 
 ### Testing
+
 - **Vitest** - Unit testing framework
 - **Playwright** - End-to-end testing
 - **React Testing Library** - Component testing
@@ -34,19 +37,22 @@ A minimal, cost-effective peer-to-peer messaging application built with WebRTC, 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or pnpm package manager
 - Modern web browser with WebRTC support
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd p2p-messenger
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -54,9 +60,11 @@ A minimal, cost-effective peer-to-peer messaging application built with WebRTC, 
    ```
 
 3. **Start the development environment**
+
    ```bash
    npm run dev:full
    ```
+
    This starts both the signaling server (port 4000) and the React app (port 3000).
 
 4. **Open the application**
@@ -66,11 +74,13 @@ A minimal, cost-effective peer-to-peer messaging application built with WebRTC, 
 ### Alternative: Start Components Separately
 
 **Start the signaling server:**
+
 ```bash
 npm run server
 ```
 
 **Start the React development server:**
+
 ```bash
 npm run dev
 ```
@@ -83,9 +93,10 @@ npm run dev
 4. **Start Messaging**: Once connected, send messages directly to peers
 
 ### Example Workflow
+
 ```
 User A: Joins room "test123"
-User B: Joins room "test123" 
+User B: Joins room "test123"
 System: Establishes P2P connection
 Users: Can now send messages directly to each other
 ```
@@ -112,11 +123,13 @@ p2p-messenger/
 ## 🧪 Testing
 
 ### Run All Tests
+
 ```bash
 npm run test:all
 ```
 
 ### Unit Tests (Vitest)
+
 ```bash
 npm run test:unit
 npm run test:unit:coverage  # With coverage report
@@ -124,6 +137,7 @@ npm run test:unit:ui        # Interactive UI
 ```
 
 ### E2E Tests (Playwright)
+
 ```bash
 npm run test
 npm run test:ui             # Interactive UI
@@ -132,20 +146,35 @@ npm run test:debug          # Debug mode
 
 ## 📚 Documentation
 
-- **[Architecture Guide](docs/ARCHITECTURE.md)** - System design and technical architecture
-- **[API Documentation](docs/API.md)** - Detailed API reference
-- **[User Guide](docs/USER_GUIDE.md)** - Step-by-step user instructions
-- **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Development setup and guidelines
-- **[Technical Specifications](docs/TECHNICAL_SPECS.md)** - Technical requirements and dependencies
-- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment instructions
-- **[P2P Foundation Guide](docs/00-p2p-foundation-guide.md)** - Understanding P2P concepts
+**Complete documentation is available in the [docs/](docs/) directory:**
+
+### **Quick Start Documentation**
+
+- **[📖 Documentation Index](docs/README.md)** - Complete documentation overview
+- **[🚀 Setup & Installation](docs/02-setup-installation.md)** - Get started in 5 minutes
+- **[👥 User Guide](docs/05-user-guide.md)** - How to use the application
+
+### **Technical Documentation**
+
+- **[🏗️ Architecture Guide](docs/03-architecture-guide.md)** - System design and P2P architecture
+- **[📚 API Documentation](docs/04-api-documentation.md)** - Complete API reference
+- **[🛠️ Development Guide](docs/06-development-guide.md)** - Development workflows and contribution
+
+### **Operations Documentation**
+
+- **[🧪 Testing Guide](docs/07-testing-guide.md)** - Testing strategies and tools
+- **[🚀 Deployment Guide](docs/08-deployment-guide.md)** - Production deployment
+
+**👉 Start with the [Project Overview](docs/01-project-overview.md) for a complete introduction.**
 
 ## 🔧 Configuration
 
 ### Environment Variables
+
 - `PORT` - Signaling server port (default: 4000)
 
 ### Browser Requirements
+
 - WebRTC support (Chrome 56+, Firefox 51+, Safari 11+)
 - WebSocket support
 - Modern JavaScript (ES2020+)
@@ -173,6 +202,7 @@ This project is licensed under the ISC License - see the LICENSE file for detail
 ## 🎯 Use Cases
 
 Perfect for:
+
 - **Personal messaging** between friends and family
 - **Small team communication** (2-10 people)
 - **File sharing** in private groups

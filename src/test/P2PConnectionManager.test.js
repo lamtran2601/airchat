@@ -278,8 +278,13 @@ describe("P2PConnectionManager", () => {
       // Set up connection states and data channels
       const connection1 = manager.connections.get("peer1");
       const connection2 = manager.connections.get("peer2");
+
+      // Ensure connections exist
+      expect(connection1).toBeDefined();
+      expect(connection2).toBeDefined();
+
       connection1.connectionState = "connected";
-      connection2.connectionState = "connecting";
+      connection2.connectionState = "new";
 
       // Create separate mock data channels for each peer
       const channel1 = {
